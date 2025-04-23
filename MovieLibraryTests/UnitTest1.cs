@@ -121,6 +121,18 @@ public void Return_NoQueue_ShouldMakeAvailable()
     Assert.Null(m.CheckedOutTo);
 }
 
+[Fact]
+public void DuplicateID_ShouldOverwrite()
+{
+    var lib = new MovieLibrary();
+    lib.AddMovie(new Movie(5, "Old", "D", "G", 1990, true));
+    lib.AddMovie(new Movie(5, "New", "D", "G", 2020, true));
+
+    var movie = lib.SearchByMovieID(5);
+    Assert.Equal("New", movie.Title);
+}
+
+
     }
 }
 
