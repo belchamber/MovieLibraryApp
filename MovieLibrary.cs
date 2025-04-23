@@ -51,7 +51,7 @@ namespace MovieLibraryApp
 
             var queue = movie.WaitingQueue;
             queue.Enqueue(userName);
-            movie.WaitingQueue = queue; // ✅ Force update so NextInQueue and WaitingCount refresh
+            movie.WaitingQueue = queue; // Force update so NextInQueue and WaitingCount refresh
 
             return false;
         }
@@ -76,7 +76,7 @@ namespace MovieLibraryApp
                 movie.CheckedOutTo = null;
             }
 
-            movie.WaitingQueue = queue; // ✅ Force update again
+            movie.WaitingQueue = queue; 
         }
 
         public void BubbleSortByTitle()
