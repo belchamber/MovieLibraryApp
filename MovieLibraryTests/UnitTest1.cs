@@ -71,6 +71,22 @@ public void BorrowAvailableMovie_ShouldWork()
     Assert.Equal("User", m.CheckedOutTo);
 }
 
+[Fact]
+public void BorrowUnavailable_ShouldAddToQueue()
+{
+    var m = new Movie(2, "B", "D", "G", 2000, false)
+    {
+        CheckedOutTo = "User1"
+    };
+    var lib = new MovieLibrary();
+    lib.AddMovie(m);
+
+    bool result = lib.BorrowMovie(2, "User2");
+
+    Assert.False(result);
+    Assert.Equal("User2", m.NextInQueue);
+}
+
 
     }
 }
