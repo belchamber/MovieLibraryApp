@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace MovieLibraryApp
 {
@@ -14,6 +15,31 @@ namespace MovieLibraryApp
         {
             Movies.AddLast(movie);
             movieHashtable.Insert(movie.MovieID, movie);
+        }
+
+        // Search methods
+        public Movie SearchByTitle(string title)
+        {
+            return Movies.FirstOrDefault(m => m.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public Movie SearchByMovieID(int movieID)
+        {
+            return movieHashtable.ContainsKey(movieID) ? movieHashtable.Get(movieID) : null;
+        }
+
+        public Movie BinarySearchByMovieID(int movieID)
+        {
+            var sorted = Movies.OrderBy(m => m.MovieID).ToList();
+            int low = 0, high = sorted.Count - 1;
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                if (sorted[mid].MovieID == movieID) return sorted[mid];
+                if (sorted[mid].MovieID < movieID) low = mid + 1;
+                else high = mid - 1;
+            }
+            return null;
         }
 
         // Bubble Sort by Title
@@ -51,6 +77,48 @@ namespace MovieLibraryApp
             result.AddRange(left.GetRange(i, left.Count - i));
             result.AddRange(right.GetRange(j, right.Count - j));
             return result;
+        }
+
+        // Borrow a movie or add user to waiting queue
+        public bool BorrowMovie(int movieID, string userName)
+        {
+            if (!movieHashtable.ContainsKey(movieID)) return false;
+            var movie = movieHashtable.Get(movieID);
+            if (movie.Availability)
+            {
+                movie.Availability = false;
+                movie.CheckedOutTo = userName;
+                return true;
+            }
+
+            var queue = movie.WaitingQueue;
+            queue.Enqueue(userName);
+            movie.WaitingQueue = queue;
+            return false;
+        }
+
+        // Return a movie, reassign if there's a waiting user
+        public void ReturnMovie(int movieID)
+        {
+            if (!movieHashtable.ContainsKey(movieID)) return;
+            var movie = movieHashtable.Get(movieID);
+            if (movie.Availability) return;
+
+            var queue = movie.WaitingQueue;
+            if (queue.Count > 0)
+            {
+                string next = queue.Dequeue();
+                movie.Availability = false;
+                movie.CheckedOutTo = next;
+                MessageBox.Show($"'{movie.Title}' reassigned to: {next}");
+            }
+            else
+            {
+                movie.Availability = true;
+                movie.CheckedOutTo = null;
+            }
+
+            movie.WaitingQueue = queue;
         }
     }
 }
