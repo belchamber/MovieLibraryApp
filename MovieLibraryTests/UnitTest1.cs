@@ -105,6 +105,22 @@ public void Return_WithWaitingList_ShouldAssignNext()
     Assert.Single(m.WaitingQueue);
 }
 
+[Fact]
+public void Return_NoQueue_ShouldMakeAvailable()
+{
+    var m = new Movie(4, "D", "D", "G", 2000, false)
+    {
+        CheckedOutTo = "User"
+    };
+    var lib = new MovieLibrary();
+    lib.AddMovie(m);
+
+    lib.ReturnMovie(4);
+
+    Assert.True(m.Availability);
+    Assert.Null(m.CheckedOutTo);
+}
+
     }
 }
 
