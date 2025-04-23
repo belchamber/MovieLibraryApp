@@ -150,6 +150,14 @@ public void ReturnInvalidID_ShouldNotCrash()
     Assert.Null(ex);  // No exception should be thrown
 }
 
+[Fact]
+public void InvalidKeyInHashTable_ShouldThrow()
+{
+    var map = new MyHashTable<int, string>();
+    
+    Assert.Throws<KeyNotFoundException>(() => map.Get(1));
+}
+
 
     }
 }
