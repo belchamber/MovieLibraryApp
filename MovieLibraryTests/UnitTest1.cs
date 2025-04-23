@@ -3,7 +3,7 @@ using MovieLibraryApp;
 
 namespace MovieLibraryTests
 {
-    public class UnitTest1
+    public class UnitTest1   // First test
     {
         [Fact]
         public void AddMovie_ShouldBeRetrievableByID()
