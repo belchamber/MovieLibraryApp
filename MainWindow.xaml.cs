@@ -164,9 +164,14 @@ namespace MovieLibraryApp
         {
             if (MoviesDataGrid.SelectedItem is Movie selectedMovie)
             {
-                NextInLineLabel.Content = selectedMovie.NextInQueue != null && selectedMovie.NextInQueue != ""
+                // Update label
+                NextInLineLabel.Content = !string.IsNullOrEmpty(selectedMovie.NextInQueue)
                     ? $"Next in line: {selectedMovie.NextInQueue}"
                     : "No one in queue.";
+
+                // ✅ Populate search boxes
+                TitleTextBox.Text = selectedMovie.Title;
+                MovieIDTextBox.Text = selectedMovie.MovieID.ToString();
             }
         }
 
