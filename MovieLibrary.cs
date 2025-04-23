@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace MovieLibraryApp
 {
@@ -10,23 +13,17 @@ namespace MovieLibraryApp
         private readonly MyHashTable<int, Movie> movieHashtable = new();
         private LinkedList<Movie> Movies = new();
 
-        // Add a movie to the library
         public void AddMovie(Movie movie)
         {
             Movies.AddLast(movie);
             movieHashtable.Insert(movie.MovieID, movie);
         }
 
-        // Search methods
-        public Movie SearchByTitle(string title)
-        {
-            return Movies.FirstOrDefault(m => m.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
-        }
 
-        public Movie SearchByMovieID(int movieID)
-        {
-            return movieHashtable.ContainsKey(movieID) ? movieHashtable.Get(movieID) : null;
-        }
+        // Search functionality for title and ID
+
+        public Movie SearchByTitle(string title) => Movies.FirstOrDefault(m => m.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
+        public Movie SearchByMovieID(int movieID) => movieHashtable.ContainsKey(movieID) ? movieHashtable.Get(movieID) : null;
 
         public Movie BinarySearchByMovieID(int movieID)
         {
@@ -36,13 +33,52 @@ namespace MovieLibraryApp
             {
                 int mid = (low + high) / 2;
                 if (sorted[mid].MovieID == movieID) return sorted[mid];
-                if (sorted[mid].MovieID < movieID) low = mid + 1;
-                else high = mid - 1;
+                if (sorted[mid].MovieID < movieID) low = mid + 1; else high = mid - 1;
             }
             return null;
         }
 
-        // Bubble Sort by Title
+        public bool BorrowMovie(int movieID, string userName)
+        {
+            if (!movieHashtable.ContainsKey(movieID)) return false;
+            var movie = movieHashtable.Get(movieID);
+            if (movie.Availability)
+            {
+                movie.Availability = false;
+                movie.CheckedOutTo = userName;
+                return true;
+            }
+
+            var queue = movie.WaitingQueue;
+            queue.Enqueue(userName);
+            movie.WaitingQueue = queue; // ✅ Force update so NextInQueue and WaitingCount refresh
+
+            return false;
+        }
+
+        public void ReturnMovie(int movieID)
+        {
+            if (!movieHashtable.ContainsKey(movieID)) return;
+            var movie = movieHashtable.Get(movieID);
+            if (movie.Availability) return;
+
+            var queue = movie.WaitingQueue;
+            if (queue.Count > 0)
+            {
+                string next = queue.Dequeue();
+                movie.Availability = false;
+                movie.CheckedOutTo = next;
+                MessageBox.Show($"'{movie.Title}' reassigned to: {next}");
+            }
+            else
+            {
+                movie.Availability = true;
+                movie.CheckedOutTo = null;
+            }
+
+            movie.WaitingQueue = queue; // ✅ Force update again
+        }
+
         public void BubbleSortByTitle()
         {
             var list = Movies.ToList();
@@ -53,11 +89,7 @@ namespace MovieLibraryApp
             Movies = new LinkedList<Movie>(list);
         }
 
-        // Merge Sort by Release Year
-        public void MergeSortByReleaseYear()
-        {
-            Movies = new LinkedList<Movie>(MergeSort(Movies.ToList()));
-        }
+        public void MergeSortByReleaseYear() => Movies = new LinkedList<Movie>(MergeSort(Movies.ToList()));
 
         private List<Movie> MergeSort(List<Movie> list)
         {
@@ -79,46 +111,48 @@ namespace MovieLibraryApp
             return result;
         }
 
-        // Borrow a movie or add user to waiting queue
-        public bool BorrowMovie(int movieID, string userName)
-        {
-            if (!movieHashtable.ContainsKey(movieID)) return false;
-            var movie = movieHashtable.Get(movieID);
-            if (movie.Availability)
-            {
-                movie.Availability = false;
-                movie.CheckedOutTo = userName;
-                return true;
-            }
+        public List<Movie> GetAllMovies() => Movies.ToList();
 
-            var queue = movie.WaitingQueue;
-            queue.Enqueue(userName);
-            movie.WaitingQueue = queue;
-            return false;
+        public void ExportToJson(string path) => File.WriteAllText(path, JsonConvert.SerializeObject(Movies.ToList(), Formatting.Indented));
+
+        public void ImportFromJson(string path)
+        {
+            var movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText(path));
+            foreach (var m in movies)
+            {
+                m.Availability = true; 
+                m.CheckedOutTo = null; 
+                m.WaitingQueueList = new();
+                AddMovie(m);
+            }
         }
 
-        // Return a movie, reassign if there's a waiting user
-        public void ReturnMovie(int movieID)
+        public void ExportToXml(string path)
         {
-            if (!movieHashtable.ContainsKey(movieID)) return;
-            var movie = movieHashtable.Get(movieID);
-            if (movie.Availability) return;
+            var serializer = new XmlSerializer(typeof(List<Movie>));
+            using var writer = new StreamWriter(path);
+            serializer.Serialize(writer, Movies.ToList());
+        }
 
-            var queue = movie.WaitingQueue;
-            if (queue.Count > 0)
+        public void ImportFromXml(string path)
+        {
+            try
             {
-                string next = queue.Dequeue();
-                movie.Availability = false;
-                movie.CheckedOutTo = next;
-                MessageBox.Show($"'{movie.Title}' reassigned to: {next}");
+                var serializer = new XmlSerializer(typeof(List<Movie>));
+                using var fs = new FileStream(path, FileMode.Open);
+                var movies = (List<Movie>)serializer.Deserialize(fs);
+                foreach (var m in movies)
+                {
+                    m.Availability = true; 
+                    m.CheckedOutTo = null; 
+                    m.WaitingQueueList = new();
+                    AddMovie(m);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                movie.Availability = true;
-                movie.CheckedOutTo = null;
+                MessageBox.Show($"Import failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            movie.WaitingQueue = queue;
         }
     }
 }
