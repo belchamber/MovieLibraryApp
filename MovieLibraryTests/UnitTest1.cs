@@ -132,6 +132,14 @@ public void DuplicateID_ShouldOverwrite()
     Assert.Equal("New", movie.Title);
 }
 
+[Fact]
+public void BorrowFromEmptyLibrary_ShouldFail()
+{
+    var lib = new MovieLibrary();
+    bool result = lib.BorrowMovie(999, "User");
+
+    Assert.False(result);
+}
 
     }
 }
