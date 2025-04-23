@@ -29,6 +29,21 @@ public void SearchByTitle_ShouldWork(string title, int id)
     Assert.Equal(id, result.MovieID);
 }
 
+[Fact]
+public void BubbleSort_ShouldSortTitles()
+{
+    var lib = new MovieLibrary();
+    lib.AddMovie(new Movie(1, "Zebra", "D", "G", 2000, true));
+    lib.AddMovie(new Movie(2, "Apple", "D", "G", 2001, true));
+    
+    lib.BubbleSortByTitle();
+    var sorted = lib.GetAllMovies();
+
+    Assert.Equal("Apple", sorted[0].Title);
+    Assert.Equal("Zebra", sorted[1].Title);
+}
+
+
     }
 }
 
