@@ -87,6 +87,23 @@ public void BorrowUnavailable_ShouldAddToQueue()
     Assert.Equal("User2", m.NextInQueue);
 }
 
+[Fact]
+public void Return_WithWaitingList_ShouldAssignNext()
+{
+    var m = new Movie(3, "C", "D", "G", 2000, false)
+    {
+        CheckedOutTo = "A",
+        WaitingQueueList = new List<string> { "B", "C" }
+    };
+    var lib = new MovieLibrary();
+    lib.AddMovie(m);
+
+    lib.ReturnMovie(3);
+
+    Assert.False(m.Availability);
+    Assert.Equal("B", m.CheckedOutTo);
+    Assert.Single(m.WaitingQueue);
+}
 
     }
 }
