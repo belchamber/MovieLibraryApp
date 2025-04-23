@@ -169,5 +169,15 @@ namespace MovieLibraryApp
                     : "No one in queue.";
             }
         }
+
+        private void ResetList_Click(object sender, RoutedEventArgs e)
+        {
+            TitleTextBox.Clear();
+            MovieIDTextBox.Clear();
+            UserNameTextBox.Clear();
+            NextInLineLabel.Content = string.Empty;
+            MoviesDataGrid.ItemsSource = null;
+            MoviesDataGrid.ItemsSource = movieLibrary.GetAllMovies();
+        }
     }
 }

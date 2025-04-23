@@ -41,6 +41,7 @@
             <Button Content="Return Movie" Click="ReturnMovie_Click" Width="120" Margin="5"/>
             <Button Content="Export Data" Click="ExportData_Click" Width="100" Margin="5"/>
             <Button Content="Import Data" Click="ImportData_Click" Width="100" Margin="5"/>
+            <Button Content="Reset List" Click="ResetList_Click" Width="100" Margin="5"/>
         </StackPanel>
 
         <DataGrid Name="MoviesDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="4" Grid.ColumnSpan="2" Margin="10" SelectionChanged="MoviesDataGrid_SelectionChanged">
@@ -60,4 +61,3 @@
         <Label Name="NextInLineLabel" Grid.Row="5" Grid.ColumnSpan="2" Margin="10" FontWeight="Bold" FontSize="14" Foreground="DarkSlateGray"/>
     </Grid>
 </Window>
-
