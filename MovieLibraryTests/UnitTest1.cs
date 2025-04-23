@@ -57,6 +57,19 @@ public void MergeSort_ShouldSortByYear()
     Assert.Equal(2020, sorted[1].ReleaseYear);
 }
 
+[Fact]
+public void BorrowAvailableMovie_ShouldWork()
+{
+    var lib = new MovieLibrary();
+    var m = new Movie(1, "A", "D", "G", 2000, true);
+    lib.AddMovie(m);
+
+    bool result = lib.BorrowMovie(1, "User");
+
+    Assert.True(result);
+    Assert.False(m.Availability);
+    Assert.Equal("User", m.CheckedOutTo);
+}
 
 
     }
