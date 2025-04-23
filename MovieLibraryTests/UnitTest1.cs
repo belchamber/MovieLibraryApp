@@ -43,6 +43,21 @@ public void BubbleSort_ShouldSortTitles()
     Assert.Equal("Zebra", sorted[1].Title);
 }
 
+[Fact]
+public void MergeSort_ShouldSortByYear()
+{
+    var lib = new MovieLibrary();
+    lib.AddMovie(new Movie(1, "Old", "D", "G", 1990, true));
+    lib.AddMovie(new Movie(2, "New", "D", "G", 2020, true));
+    
+    lib.MergeSortByReleaseYear();
+    var sorted = lib.GetAllMovies();
+
+    Assert.Equal(1990, sorted[0].ReleaseYear);
+    Assert.Equal(2020, sorted[1].ReleaseYear);
+}
+
+
 
     }
 }
