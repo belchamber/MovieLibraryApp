@@ -141,6 +141,16 @@ public void BorrowFromEmptyLibrary_ShouldFail()
     Assert.False(result);
 }
 
+[Fact]
+public void ReturnInvalidID_ShouldNotCrash()
+{
+    var lib = new MovieLibrary();
+    var ex = Record.Exception(() => lib.ReturnMovie(12345));
+
+    Assert.Null(ex);  // No exception should be thrown
+}
+
+
     }
 }
 
