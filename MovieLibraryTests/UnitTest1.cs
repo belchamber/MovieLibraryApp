@@ -17,6 +17,18 @@ namespace MovieLibraryTests
             Assert.NotNull(retrieved);
             Assert.Equal("Interstellar", retrieved.Title);
         }
+        [Theory]
+[InlineData("Inception", 1)]
+[InlineData("Avatar", 2)]
+public void SearchByTitle_ShouldWork(string title, int id)
+{
+    var lib = new MovieLibrary();
+    lib.AddMovie(new Movie(id, title, "Dir", "Genre", 2020, true));
+    var result = lib.SearchByTitle(title);
+    Assert.NotNull(result);
+    Assert.Equal(id, result.MovieID);
+}
+
     }
 }
 
