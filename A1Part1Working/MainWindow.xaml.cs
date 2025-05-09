@@ -12,6 +12,7 @@ namespace MovieLibraryApp
     {
         private MovieLibrary movieLibrary;
 
+        // Constructor: initializes UI and loads movie list
         public MainWindow()
         {
             InitializeComponent();
@@ -26,18 +27,21 @@ namespace MovieLibraryApp
             MoviesDataGrid.ItemsSource = movieLibrary.GetAllMovies();
         }
 
+        // Called when the 'Add Movie' button is clicked
         private void BubbleSortButton_Click(object sender, RoutedEventArgs e)
         {
             movieLibrary.BubbleSortByTitle();
             RefreshGrid();
         }
 
+        // Called when the 'Merge Sort' button is clicked – sorts movies by release year
         private void MergeSortButton_Click(object sender, RoutedEventArgs e)
         {
             movieLibrary.MergeSortByReleaseYear();
             RefreshGrid();
         }
 
+        // Called when the 'Search by Title' button is clicked
         private void SearchByTitle_Click(object sender, RoutedEventArgs e)
         {
             string title = TitleTextBox.Text.Trim();
@@ -56,6 +60,7 @@ namespace MovieLibraryApp
             }
         }
 
+        // Called when the 'Search by ID' button is clicked
         private void SearchByMovieID_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(MovieIDTextBox.Text, out int movieID))
@@ -73,6 +78,7 @@ namespace MovieLibraryApp
             }
         }
 
+            // Called when the 'Binary Search by ID' button is clicked
         private void BinarySearchByID_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(MovieIDTextBox.Text, out int movieID))
@@ -90,6 +96,7 @@ namespace MovieLibraryApp
             }
         }
 
+        // Called when the 'Borrow Movie' button is clicked
         private void BorrowMovie_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(MovieIDTextBox.Text, out int movieID) || string.IsNullOrEmpty(UserNameTextBox.Text))
@@ -103,6 +110,7 @@ namespace MovieLibraryApp
             RefreshGrid();
         }
 
+        // Called when the 'Return Movie' button is clicked
         private void ReturnMovie_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(MovieIDTextBox.Text, out int movieID))
@@ -115,6 +123,7 @@ namespace MovieLibraryApp
             RefreshGrid();
         }
 
+        // Called when the 'Export' button is clicked – saves to JSON or XML
         private void ExportData_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog dlg = new SaveFileDialog
@@ -135,6 +144,8 @@ namespace MovieLibraryApp
             }
         }
 
+        // Called when the 'Import' button is clicked – loads from JSON or XML
+
         private void ImportData_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog
@@ -154,12 +165,14 @@ namespace MovieLibraryApp
             }
         }
 
+        // Updates input boxes and queue label when a movie is selected from the grid
         private void RefreshGrid()
         {
             MoviesDataGrid.ItemsSource = null;
             MoviesDataGrid.ItemsSource = movieLibrary.GetAllMovies();
         }
 
+        // Updates input boxes and queue label when a movie is selected from the grid
         private void MoviesDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (MoviesDataGrid.SelectedItem is Movie selectedMovie)
@@ -175,6 +188,7 @@ namespace MovieLibraryApp
             }
         }
 
+        // Clears input fields and resets the DataGrid to show all movies
         private void ResetList_Click(object sender, RoutedEventArgs e)
         {
             TitleTextBox.Clear();

@@ -6,6 +6,7 @@ namespace MovieLibraryTests
 {
     public class UnitTest1
     {
+        // Tests that a movie can be added and retrieved by ID
         [Fact]
         public void AddMovie_ShouldBeRetrievableByID()
         {
@@ -22,6 +23,8 @@ namespace MovieLibraryTests
         [Theory]
         [InlineData("Inception", 1)]
         [InlineData("Avatar", 2)]
+    
+        // Tests title-based movie search
         public void SearchByTitle_ShouldWork(string title, int id)
         {
             var lib = new MovieLibrary();
@@ -32,6 +35,7 @@ namespace MovieLibraryTests
             Assert.Equal(id, result.MovieID);
         }
 
+        // Tests that bubble sort - sorts titles correctly
         [Fact]
         public void BubbleSort_ShouldSortTitles()
         {
@@ -46,6 +50,7 @@ namespace MovieLibraryTests
             Assert.Equal("Zebra", sorted[1].Title);
         }
 
+        // Tests that merge sort sorts movies by year
         [Fact]
         public void MergeSort_ShouldSortByYear()
         {
@@ -60,6 +65,7 @@ namespace MovieLibraryTests
             Assert.Equal(2020, sorted[1].ReleaseYear);
         }
 
+        // Tests borrowing a movie that is available
         [Fact]
         public void BorrowAvailableMovie_ShouldWork()
         {
@@ -74,6 +80,7 @@ namespace MovieLibraryTests
             Assert.Equal("User", m.CheckedOutTo);
         }
 
+        // Tests borrowing a movie that is already borrowed adds user to queue
         [Fact]
         public void BorrowUnavailable_ShouldAddToQueue()
         {
@@ -90,6 +97,7 @@ namespace MovieLibraryTests
             Assert.Equal("User2", m.NextInQueue);
         }
 
+        // Tests that returning a movie with a waiting list assigns it to the next user
         [Fact]
         public void Return_WithWaitingList_ShouldAssignNext()
         {
@@ -108,6 +116,7 @@ namespace MovieLibraryTests
             Assert.Single(m.WaitingQueue);
         }
 
+        // Tests that returning a movie with no queue makes it available
         [Fact]
         public void Return_NoQueue_ShouldMakeAvailable()
         {
@@ -124,6 +133,7 @@ namespace MovieLibraryTests
             Assert.Null(m.CheckedOutTo);
         }
 
+        // Tests that adding a movie with an existing ID replaces the old one
         [Fact]
         public void DuplicateID_ShouldOverwrite()
         {
@@ -135,6 +145,7 @@ namespace MovieLibraryTests
             Assert.Equal("New", movie.Title);
         }
 
+        // Tests borrowing from an empty library fails
         [Fact]
         public void BorrowFromEmptyLibrary_ShouldFail()
         {
@@ -144,6 +155,7 @@ namespace MovieLibraryTests
             Assert.False(result);
         }
 
+         // Tests returning an invalid movie ID doesn't crash the system
         [Fact]
         public void ReturnInvalidID_ShouldNotCrash()
         {
@@ -152,7 +164,8 @@ namespace MovieLibraryTests
 
             Assert.Null(ex);
         }
-
+        
+       // Tests hashtable throws error for missing key
         [Fact]
         public void InvalidKeyInHashTable_ShouldThrow()
         {

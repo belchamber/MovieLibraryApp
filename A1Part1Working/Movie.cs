@@ -15,10 +15,14 @@ namespace MovieLibraryApp
 
         [XmlArray("WaitingQueue")]
         [XmlArrayItem("string")]
+
+        // List version of waiting queue
         public List<string> WaitingQueueList { get; set; } = new List<string>();
 
         [XmlIgnore]
         [JsonIgnore]
+
+        // Actual waiting queue for borrowing
         public Queue<string> WaitingQueue
         {
             get => new Queue<string>(WaitingQueueList ?? new List<string>());
@@ -28,9 +32,11 @@ namespace MovieLibraryApp
         [XmlIgnore, JsonIgnore] public int WaitingCount => WaitingQueue?.Count ?? 0;
         [XmlIgnore, JsonIgnore] public string CheckedOutTo { get; set; }
         [XmlIgnore, JsonIgnore] public string NextInQueue => WaitingQueue.Count > 0 ? WaitingQueue.Peek() : "";
-
+        
+        // Default constructor
         public Movie() { }
 
+        // Constructor that initializes all properties
         public Movie(int movieID, string title, string director, string genre, int releaseYear, bool availability)
         {
             MovieID = movieID;

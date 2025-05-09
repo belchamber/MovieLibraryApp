@@ -24,6 +24,7 @@ namespace MovieLibraryApp
 
         private int GetBucketIndex(TKey key) => key.GetHashCode() & 0x7fffffff % capacity;
 
+        // Inserts a key-value pair into the hashtable
         public void Insert(TKey key, TValue value)
         {
             int index = GetBucketIndex(key);
@@ -37,6 +38,7 @@ namespace MovieLibraryApp
             buckets[index] = newNode;
         }
 
+        // Retrieves value by key from hashtable
         public TValue Get(TKey key)
         {
             var head = buckets[GetBucketIndex(key)];
@@ -48,6 +50,7 @@ namespace MovieLibraryApp
             throw new KeyNotFoundException();
         }
 
+        // Checks if a key exists in the hashtable
         public bool ContainsKey(TKey key)
         {
             var head = buckets[GetBucketIndex(key)];

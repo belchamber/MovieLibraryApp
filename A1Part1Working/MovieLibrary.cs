@@ -13,6 +13,7 @@ namespace MovieLibraryApp
         private readonly MyHashTable<int, Movie> movieHashtable = new();
         private LinkedList<Movie> Movies = new();
 
+        // Adds a new movie to the collection and hashtable
         public void AddMovie(Movie movie)
         {
             Movies.AddLast(movie);
@@ -25,6 +26,7 @@ namespace MovieLibraryApp
         public Movie SearchByTitle(string title) => Movies.FirstOrDefault(m => m.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
         public Movie SearchByMovieID(int movieID) => movieHashtable.ContainsKey(movieID) ? movieHashtable.Get(movieID) : null;
 
+        // Searches for a movie by ID using binary search
         public Movie BinarySearchByMovieID(int movieID)
         {
             var sorted = Movies.OrderBy(m => m.MovieID).ToList();
@@ -37,7 +39,7 @@ namespace MovieLibraryApp
             }
             return null;
         }
-
+        // Borrows a movie or adds user to waiting queue if unavailable
         public bool BorrowMovie(int movieID, string userName)
         {
             if (!movieHashtable.ContainsKey(movieID)) return false;
@@ -56,6 +58,7 @@ namespace MovieLibraryApp
             return false;
         }
 
+        // Returns a movie and reassigns to next in queue if applicable
         public void ReturnMovie(int movieID)
         {
             if (!movieHashtable.ContainsKey(movieID)) return;
@@ -79,6 +82,7 @@ namespace MovieLibraryApp
             movie.WaitingQueue = queue; 
         }
 
+        // Sorts movies by title using bubble sort
         public void BubbleSortByTitle()
         {
             var list = Movies.ToList();
@@ -88,7 +92,8 @@ namespace MovieLibraryApp
                         (list[j], list[j + 1]) = (list[j + 1], list[j]);
             Movies = new LinkedList<Movie>(list);
         }
-
+        
+        // Sorts movies by release year using merge sort
         public void MergeSortByReleaseYear() => Movies = new LinkedList<Movie>(MergeSort(Movies.ToList()));
 
         private List<Movie> MergeSort(List<Movie> list)
@@ -111,10 +116,13 @@ namespace MovieLibraryApp
             return result;
         }
 
+        // Returns a list of all movies
         public List<Movie> GetAllMovies() => Movies.ToList();
 
+         // Saves movie collection to JSON file
         public void ExportToJson(string path) => File.WriteAllText(path, JsonConvert.SerializeObject(Movies.ToList(), Formatting.Indented));
 
+        // Loads movie collection from JSON fil
         public void ImportFromJson(string path)
         {
             var movies = JsonConvert.DeserializeObject<List<Movie>>(File.ReadAllText(path));
@@ -127,6 +135,7 @@ namespace MovieLibraryApp
             }
         }
 
+        // Saves movie collection to XML file           
         public void ExportToXml(string path)
         {
             var serializer = new XmlSerializer(typeof(List<Movie>));
@@ -134,6 +143,7 @@ namespace MovieLibraryApp
             serializer.Serialize(writer, Movies.ToList());
         }
 
+        // Loads movie collection from XML filee
         public void ImportFromXml(string path)
         {
             try
