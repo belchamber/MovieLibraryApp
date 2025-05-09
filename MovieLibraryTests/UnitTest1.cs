@@ -107,6 +107,7 @@ namespace MovieLibraryTests
                 WaitingQueueList = new List<string> { "B", "C" }
             };
             var lib = new MovieLibrary();
+            lib.EnablePopups = false; // Disable popup during this test
             lib.AddMovie(m);
 
             lib.ReturnMovie(3);

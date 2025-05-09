@@ -10,6 +10,8 @@ namespace MovieLibraryApp
 {
     public class MovieLibrary
     {
+        public bool EnablePopups { get; set; } = true;
+
         private readonly MyHashTable<int, Movie> movieHashtable = new();
         private LinkedList<Movie> Movies = new();
 
@@ -71,7 +73,9 @@ namespace MovieLibraryApp
                 string next = queue.Dequeue();
                 movie.Availability = false;
                 movie.CheckedOutTo = next;
-                MessageBox.Show($"'{movie.Title}' reassigned to: {next}");
+                
+                 if (EnablePopups)
+            MessageBox.Show($"'{movie.Title}' reassigned to: {next}");
             }
             else
             {
